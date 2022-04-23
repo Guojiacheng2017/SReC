@@ -6,3 +6,4 @@ K = 10
 plot = ""
 log_likelihood = True
 collect_probs = False
+error_count = 0

@@ -90,10 +90,16 @@ def main(
         filename = filenames[0]
         file_id = filename.split(".")[0]
         filepath = os.path.join(save_path, f"{file_id}.srec")
-
+        
+        # the error times
         with encoder_time_accumulator.execute():
-            log_likelihood_bits, entropy_coding_bytes = coder.encode(
-                x, filepath)
+            # print(filename)
+            try:
+                log_likelihood_bits, entropy_coding_bytes = coder.encode(x, filepath)
+            except:
+                configs.error_count = configs.error_count + 1
+                print("Image size error: %d\tImage Name: %s" % (configs.error_count, filenames))
+                continue;
 
         total_file_bytes += os.path.getsize(filepath)
         total_entropy_coding_bytes += np.array(entropy_coding_bytes)

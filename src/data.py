@@ -106,6 +106,7 @@ class ImageFolder(data.Dataset):
         return self.to_tensor_not_normalized(x)
 
     def read(self, filename: str) -> bytes:
+#         print(type(self.dir_path), type(filename)) ####
         with open(os.path.join(self.dir_path, filename), "rb") as f:
             return f.read()
 
