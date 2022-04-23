@@ -1,3 +1,9 @@
+# Project Announcement  <br>
+
+This project is based on https://github.com/caoscott/SReC.
+
+Some code is modified to suit other images on specific environment.
+
 # Lossless Image Compression through Super-Resolution  <br>
 [Sheng Cao](https://caoscott.github.io/),
 [Chao-Yuan Wu](https://www.cs.utexas.edu/~cywu/), 
