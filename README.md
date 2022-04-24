@@ -1,8 +1,44 @@
 # Project Announcement  <br>
 
-This project is based on https://github.com/caoscott/SReC.
+This project is based on project [SReC](https://github.com/caoscott/SReC).
 
 Some code is modified to suit other images on specific environment.
+
+
+# Simple Implementation <br>
+
+Some hardware or software might not support the [L3C](https://github.com/fab-jul/L3C-PyTorch) well and detailed 
+information is in [INSTALL.md](INSTALL.md)
+```angular2html
+cd torchac
+COMPILE_CUDA=force python3 setup.py install
+
+# after finish the previous installation
+# run this command to check whether it works fine
+python3 -c "import torchac"
+```
+
+After environment setting and necessary installation, we move to implement the compression part
+
+Under the project directory, run the command as below
+
+```angular2html
+python3 -um src.encode \
+  --path /mnt/SReC/datasets/wasteDataset \ 
+  --file /mnt/SReC/datasets/wasteImage.txt \
+  --save-path rst_waste/ \
+  --load models/openimages.pth
+```
+Then the compressed images of dry trash will be stored in [rst/](rst_waste).
+
+### Classification part explanation
+What we expect is that after compression, we can implement the compressed image into the model we created
+to classify to right category. But the compressed result will damage the space information,
+which is not a image. It is more like a zip file.
+
+But the model for classification can work fine and well for now. And detailed description for this
+model is in the report.
+
 
 # Lossless Image Compression through Super-Resolution  <br>
 [Sheng Cao](https://caoscott.github.io/),
