@@ -66,8 +66,15 @@ def main(
             f"{filename} is not a .srec file")
         filepath = os.path.join(path, filename)
         with decoder_time_accumulator.execute():
-            x = coder.decode(filepath)
-            x = x.byte().squeeze(0).cpu()
+            try:
+                x = coder.decode(filepath)
+                x = x.byte().squeeze(0).cpu()
+            except:
+                configs.error_count = configs.error_count + 1
+                print("error: %d" % (configs.error_count))
+                continue;
+#             x = coder.decode(filepath)
+#             x = x.byte().squeeze(0).cpu()
         img = T.functional.to_pil_image(x)
         img.save(os.path.join(save_path, f"{filename[:-5]}.png"))
         print(

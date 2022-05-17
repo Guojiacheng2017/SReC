@@ -100,6 +100,7 @@ class Bitcoding(object):
             with self.scale_timers[0].execute():
                 H, W = read_shapes(fin)
                 shapes = lc_data.get_shapes(H, W)
+#                 print(H, W, shapes[-1])
                 x = self.decode_uniform(256, fin, shapes[-1])
 
             ctx: torch.Tensor = 0.  # type: ignore
@@ -148,10 +149,10 @@ class Bitcoding(object):
         # levels is either 4 or 256.
         # This means we can apply simple bit manipulations to store these as uniform.
         assert levels == 4 or levels == 256, levels
-
+        
         if levels == 4:
             S = S.reshape(-1)
-            S = F.pad(S, [0, 4 - S.shape[0] % 4])
+            S = F.pad(S, [0, (0 if S.shape[0] % 4 == 0 else 4 - S.shape[0] % 4)])
             # print(S.shape)
             assert S.shape[0] % 4 == 0
             N = S.shape[0]//4
@@ -176,9 +177,10 @@ class Bitcoding(object):
         """ decode coarsest scale, for which we assume a uniform prior. """
         # Because our model only stores RGB values and rounding bits as uniform,
         # levels is either 4 or 256.
+        
         assert levels == 4 or levels == 256, levels
 
-        num_elements = np.prod(shape) * 3
+        num_elements = np.prod(shape) * 3  # three channels rgb
         buffer_size = (num_elements+3)//4 if levels == 4 else num_elements
         buffer = fin.read(buffer_size)
         x_np = np.frombuffer(buffer, dtype=np.uint8)
@@ -193,6 +195,11 @@ class Bitcoding(object):
                 (x & 0b00001100) // 4,
                 (x & 0b00000011)]).reshape(-1)
             padding = num_elements % 4
+#             if padding == 4:
+#                 padding = 0
+#             print(x.shape[0])
+#             print(num_elements)
+#             print(padding)
             assert x.shape[0] == num_elements + padding
             x = x[:num_elements]
 
@@ -314,4 +321,5 @@ def write_bytes(f, ts, xs):
 def read_bytes(f, ts):
     for t in ts:
         num_bytes_to_read = t().itemsize
+#         print(num_bytes_to_read)
         yield np.frombuffer(f.read(num_bytes_to_read), t, count=1)
